@@ -76,7 +76,6 @@ function checksTodoExists(request, response, next) {
     return response.status(404).json({ error: "erro" });
   }
 
-
   request.user = user;
   request.todo = todo;
   next();
