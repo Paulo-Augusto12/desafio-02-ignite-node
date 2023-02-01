@@ -36,8 +36,8 @@ function checksCreateTodosUserAvailability(request, response, next) {
     return response.status(403).json({ error: "Não é possível" });
   }
 
-  if (user.pro){
-    next()
+  if (user.pro) {
+    next();
   }
 
   next();
