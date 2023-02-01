@@ -52,15 +52,15 @@ function checksTodoExists(request, response, next) {
   const { username } = request.headers;
   const { id } = request.params;
 
-  const validId = validate(id);
-
   const user = users.find((user) => user.username === username);
 
   if (!user) {
     return response
-      .status(400)
+      .status(404)
       .json({ error: "O usuário informado não é válido" });
   }
+
+  const validId = validate(id);
 
   if (validId === false) {
     return response
@@ -68,13 +68,18 @@ function checksTodoExists(request, response, next) {
       .json({ error: "O id inserido é um Id inválido" });
   }
 
-  const searchId = username.todos.includes(id);
+  const todo = user.todos.find((x) => x.id === id);
 
-  if (searchId === false) {
-    return response
-      .status(400)
-      .json({ error: "O usuário não possui uma tarefa com o Id informado" });
+  // console.log("usuário", user, "tarefa informada", todo);
+
+  if (!todo) {
+    return response.status(404).json({ error: "erro" });
   }
+
+
+  request.user = user;
+  request.todo = todo;
+  next();
 }
 
 function findUserById(request, response, next) {
