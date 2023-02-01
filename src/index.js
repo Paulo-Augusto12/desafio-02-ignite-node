@@ -33,7 +33,12 @@ function checksCreateTodosUserAvailability(request, response, next) {
   const { user } = request;
 
   if (user.pro === false && user.todos.length >= 10) {
-    return response.status(403).json({ error: "Não é possível" });
+    return response
+      .status(403)
+      .json({
+        error:
+          "Para efetuar a criação de mais de 10 tarefas, por favor assine o plano pro",
+      });
   }
 
   if (user.pro) {
