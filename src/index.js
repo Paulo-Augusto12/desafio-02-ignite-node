@@ -33,12 +33,10 @@ function checksCreateTodosUserAvailability(request, response, next) {
   const { user } = request;
 
   if (user.pro === false && user.todos.length >= 10) {
-    return response
-      .status(403)
-      .json({
-        error:
-          "Para efetuar a criação de mais de 10 tarefas, por favor assine o plano pro",
-      });
+    return response.status(403).json({
+      error:
+        "Para efetuar a criação de mais de 10 tarefas, por favor assine o plano pro",
+    });
   }
 
   if (user.pro) {
@@ -50,6 +48,33 @@ function checksCreateTodosUserAvailability(request, response, next) {
 
 function checksTodoExists(request, response, next) {
   // Complete aqui
+
+  const { username } = request.headers;
+  const { id } = request.params;
+
+  const validId = validate(id);
+
+  const user = users.find((user) => user.username === username);
+
+  if (!user) {
+    return response
+      .status(400)
+      .json({ error: "O usuário informado não é válido" });
+  }
+
+  if (validId === false) {
+    return response
+      .status(400)
+      .json({ error: "O id inserido é um Id inválido" });
+  }
+
+  const searchId = username.todos.includes(id);
+
+  if (searchId === false) {
+    return response
+      .status(400)
+      .json({ error: "O usuário não possui uma tarefa com o Id informado" });
+  }
 }
 
 function findUserById(request, response, next) {
@@ -59,7 +84,13 @@ function findUserById(request, response, next) {
 
   const userId = users.find((user) => user.id === id);
 
-  console.log(id);
+  const usersids = users.map((x) => x.id);
+
+  if (usersids.includes(id) === false) {
+    return response
+      .status(404)
+      .json({ error: "Erro na requisição, o usuário informado não existe" });
+  }
 
   if (!id) {
     return response
