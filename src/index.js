@@ -24,13 +24,23 @@ function checksExistsUserAccount(request, response, next) {
 
   request.user = user;
 
-  console.log(user);
-
   next();
 }
 
 function checksCreateTodosUserAvailability(request, response, next) {
   // Complete aqui
+
+  const { user } = request;
+
+  if (user.pro === false && user.todos.length >= 10) {
+    return response.status(403).json({ error: "Não é possível" });
+  }
+
+  if (user.pro){
+    next()
+  }
+
+  next();
 }
 
 function checksTodoExists(request, response, next) {
